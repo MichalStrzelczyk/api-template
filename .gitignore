@@ -1,0 +1,10 @@
+/vendor/
+.idea
+
+# Frontend
+/node_modules
+/public/index.html
+/public/dist
+
+# MacOS-specific file
+**/.DS_Store
