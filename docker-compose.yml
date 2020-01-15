@@ -1,0 +1,30 @@
+version: "3.5"
+services:
+    api-nginx:
+        container_name: api-nginx
+        image: nginx:1.17-alpine
+        volumes:
+            - ./:/var/www/api:rw
+            - ./docker/nginx/api-vhost.conf:/etc/nginx/sites-enabled/api-vhost.conf
+            - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+        links:
+            - api-php-fpm
+        networks:
+            api_docker_network:
+                ipv4_address: 172.16.10.19
+    api-php-fpm:
+        container_name: api-fpm
+        build:
+            context: ./
+            dockerfile: ./docker/php-fpm/Dockerfile
+        volumes:
+            - ./:/var/www/api
+        networks:
+            api_docker_network:
+                ipv4_address: 172.16.10.20
+networks:
+    api_docker_network:
+        ipam:
+            driver: default
+            config:
+                -   subnet: 172.16.10.18/28

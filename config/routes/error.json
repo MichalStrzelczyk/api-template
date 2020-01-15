@@ -1,0 +1,29 @@
+[
+    {
+        "route": "401",
+        "method": "GET",
+        "bind": {
+            "namespace": "App\\Controller",
+            "controller": "error",
+            "action": "permissionError"
+        }
+    },
+    {
+        "route": "/404",
+        "method": "GET",
+        "bind": {
+            "namespace": "App\\Controller",
+            "controller": "error",
+            "action": "notFound"
+        }
+    },
+    {
+        "route": "/500",
+        "method": "GET",
+        "bind": {
+            "namespace": "App\\Controller",
+            "controller": "error",
+            "action": "error"
+        }
+    }
+]

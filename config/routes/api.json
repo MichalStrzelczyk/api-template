@@ -1,0 +1,200 @@
+[
+  {
+    "route": "/status",
+    "method": "GET",
+    "bind": {
+      "namespace": "App\\Controller\\Api",
+      "controller": "index",
+      "action": "status"
+    }
+  },
+  {
+    "route": "/test/location/{locationId:([0-9]-m!i!s-[0-9]{3}-[0-9]{4})}",
+    "method": "GET",
+    "bind": {
+      "namespace": "App\\Controller",
+      "controller": "test",
+      "action": "name"
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "offset": {
+          "type": "integer",
+          "default": 0,
+          "minimum": 0,
+          "maximum": 999999999999,
+          "sanitizers": [
+            "toInteger"
+          ],
+          "errorMessages": {
+            "required": {
+              "2000": "Parameter `offset` is required"
+            },
+            "type": {
+              "2001": "Parameter `offset` has invalid type"
+            },
+            "minimum": {
+              "2002": "Minimum `offset` is 0"
+            },
+            "maximum": {
+              "2003": "Maximum `offset` is 999999999999"
+            }
+          }
+        },
+        "limit": {
+          "type": "integer",
+          "default": 100,
+          "minimum": 0,
+          "maximum": 999999999999,
+          "sanitizers": [
+            "toInteger"
+          ],
+          "errorMessages": {
+            "required": {
+              "3000": "Parameter `limit` is required"
+            },
+            "type": {
+              "3001": "Parameter `limit` has invalid type"
+            },
+            "minimum": {
+              "3002": "Minimum `limit` is 0"
+            },
+            "maximum": {
+              "3003": "Maximum `limit` is 999999999999"
+            }
+          }
+        },
+        "order": {
+          "type": "object",
+          "default": {
+            "id": "desc"
+          },
+          "properties": {
+            "id": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            },
+            "datetime": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          "sanitizers": [
+            "toObject"
+          ],
+          "errorMessages": {
+            "required": {
+              "4000": "Incorrect `order` values"
+            },
+            "type": {
+              "4001": "Incorrect `order` types"
+            },
+            "enum": {
+              "4002": "Incorrect `order` values"
+            },
+            "additionalProperties": {
+              "4003": "Incorrect `order` properties"
+            }
+          },
+          "additionalProperties": false
+        },
+        "fields": {
+          "type": "array",
+          "default": [
+            "id"
+          ],
+          "items": {
+            "type": "string",
+            "enum": [
+              "id",
+              "name",
+              "address",
+              "status",
+              "datetime"
+            ]
+          },
+          "errorMessages": {
+            "required": {
+              "5000": "Incorrect `order` values"
+            },
+            "type": {
+              "5001": "Incorrect `order` types"
+            },
+            "enum": {
+              "5002": "Incorrect `order` values"
+            }
+          }
+        },
+        "with": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string",
+            "enum": [
+              "brands",
+              "photos"
+            ]
+          },
+          "errorMessages": {
+            "type": {
+              "6001": "Incorrect `with` type"
+            },
+            "enum": {
+              "6002": "Incorrect `with` values"
+            }
+          }
+        },
+        "filters": {
+          "type": "object",
+          "default": {
+            "active": "1",
+            "query": ""
+          },
+          "properties": {
+            "query": {
+              "type": "string"
+            },
+            "active": {
+              "type": "string",
+              "enum": [
+                "1", "0"
+              ]
+            }
+          },
+          "sanitizers": [
+            "toObject"
+          ],
+          "errorMessages": {
+            "required": {
+              "7000": "Incorrect `filters` values"
+            },
+            "type": {
+              "7001": "Incorrect `filters` types"
+            },
+            "enum": {
+              "7002": "Incorrect `filters` values"
+            },
+            "additionalProperties": {
+              "7003": "Incorrect `filters` properties"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "offset",
+        "limit",
+        "order",
+        "fields",
+        "filters"
+      ]
+    }
+  }
+]
