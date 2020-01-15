@@ -1,73 +1,43 @@
 # API template
 
+This repository has whole the code to create an api component template. The api application is based on Phalcon 4.0
+framework. You can find the Phalcon documentation here: https://docs.phalcon.io/4.0/en/introduction. 
+
 ## Installation
 
 ```shell script
-composer install miinto/template-api
+  composer install miinto/template-api
 ```
 
 ## Usage
 
-### Routes for collection listing  
+### Routes for the collection listing  
 
-One of the most common endpoints are collection listing with paginating and filtering. Here you can find a list of all
-parameters which are able to use via GET method.
+One of the most common endpoints are data collection listing. Most likely there is a possibility to paginate, sort and
+filter the data. For these functionalities you can use parameters: 
 
-- offset
-- limit
-- fields
-- order
-- filters
-- with
+- offset    (pagination)
+- limit     (pagination)
+- order     (sorting)
+- fields    (mapping)
+- filters   (filtering)
+- with      (binding)
  
----
-#### LIMIT
-
-The limit parameter is a basic param necessary for the pagination and gives us an information about how many results do 
-we want to have in response data. The limit should always has an integer type. In the configuration route file, you can 
-define minimum and maximum criteria for limit.    
-
-An example configuration in a json route file:
-```json
-...
-"limit": {
-  "type": "integer",
-  "default": 100,
-  "minimum": 0,
-  "maximum": 1000,
-  "sanitizers": [
-    "toInteger"
-  ],
-  "errorMessages": {
-    "required": {
-      "3000": "Parameter `limit` is required"
-    },
-    "type": {
-      "3001": "Parameter `limit` has invalid type"
-    },
-    "minimum": {
-      "3002": "Minimum `limit` is 0"
-    },
-    "maximum": {
-      "3003": "Maximum `limit` is 999999999999"
-    }
-  }
-},
-...
+An example url:
+```text
+http://api-local.miinto.net/test/location/1-m!i!s-041-1010?offset=0&limit=100&order[id]=asc&order[datetime]=desc&fields[]=datetime&fields[]=id&filters[active]=1&filters[query]=Addid&with[]=brands
 ```
-**CAUTION** Sanitizer `toInteger` should be always set. The limit parameter is set in a query string so casting to the 
-integer type is required.
 
 ---
-#### OFFSET
+##### OFFSET
 
-The offset parameter is a second basic param necessary for the pagination and informs about the number of data batch. 
+The offset parameter is a basic param necessary for the pagination and informs about the number of data batch. 
 The offset should always has an integer type. In the configuration route file, you can define minimum and maximum 
 criteria. 
     
 An example configuration in a json route file:
 ```json
-...
+{
   "offset": {
     "type": "integer",
     "default": 0,
@@ -78,20 +48,24 @@ An example configuration in a json route file:
     ],
     "errorMessages": {
       "required": {
-        "2000": "Parameter `offset` is required"
+        "code": 2000,
+        "message": "Parameter `offset` is required"
       },
       "type": {
-        "2001": "Parameter `offset` has invalid type"
+        "code": 2001,
+        "message": "Parameter `offset` has invalid type"
       },
       "minimum": {
-        "2002": "Minimum `offset` is 0"
+        "code": 2002,
+        "message": "Minimum `offset` is 0"
       },
       "maximum": {
-        "2003": "Maximum `offset` is 999999999999"
+        "code": 2003,
+        "message": "Maximum `offset` is 999999999999"
       }
     }
   }
-...
+}
 ```
 
 **CAUTION** Sanitizer `toInteger` should be always set. The limit parameter is set in a query string so casting to the 
@@ -99,7 +73,50 @@ integer type is required.
 
 ---
 
-#### ORDER
+
+---
+##### LIMIT
+
+The limit parameter is a second basic param necessary for the pagination and gives us an information about how many 
+results we want to have in response data. The limit should always has an integer type. In the configuration route file, 
+you can define minimum and maximum criteria for limit.    
+
+An example configuration in a json route file:
+```json
+{
+    "limit": {
+      "type": "integer",
+      "default": 100,
+      "minimum": 0,
+      "maximum": 1000,
+      "sanitizers": [
+        "toInteger"
+      ],
+      "errorMessages": {
+        "required": {
+          "code": 3000,
+          "message": "Parameter `limit` is required"
+        },
+        "type": {
+          "code": 3001,
+          "message": "Parameter `limit` has invalid type"
+        },
+        "minimum": {
+          "code": 3002,          
+          "message": "Minimum `limit` is 0"
+        },
+        "maximum": {
+          "code": 3003,
+          "message": "Maximum `limit` is 999999999999"
+        }
+      }
+    }
+}
+```
+**CAUTION** Sanitizer `toInteger` should be always set. The limit parameter is set in a query string so casting to the 
+integer type is required.
+
+##### ORDER
 
 If you want to have a sorted dataset by some rule, you have to define the `order` section as an object type. Properties
 of this object became order types. Each of order type should be defined as a string type with enum values  
@@ -107,48 +124,52 @@ of this object became order types. Each of order type should be defined as a str
 
 An example configuration in a json route file:
 ```json
-...
-"order": {
-  "type": "object",
-  "default": {
-    "id": "desc"
-  },
-  "properties": {
-    "id": {
-      "type": "string",
-      "enum": [
-        "asc",
-        "desc"
-      ]
-    },
-    "datetime": {
-      "type": "string",
-      "enum": [
-        "asc",
-        "desc"
-      ]
+{
+    "order": {
+      "type": "object",
+      "default": {
+        "id": "desc"
+      },
+      "properties": {
+        "id": {
+          "type": "string",
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        },
+        "datetime": {
+          "type": "string",
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        }
+      },
+      "sanitizers": [
+        "toObject"
+      ],
+      "errorMessages": {
+        "required": {
+          "code": 4000,
+          "message": "Incorrect `order` values"
+        },
+        "type": {
+          "code": 4001,
+          "message": "Incorrect `order` types"
+        },
+        "enum": {
+          "code": 4002,
+          "message": "Incorrect `order` values"
+        },
+        "additionalProperties": {
+          "code": 4003,
+          "message": "Incorrect `order` properties"
+        }
+      },
+      "additionalProperties": false
     }
-  },
-  "sanitizers": [
-    "toObject"
-  ],
-  "errorMessages": {
-    "required": {
-      "4000": "Incorrect `order` values"
-    },
-    "type": {
-      "4001": "Incorrect `order` types"
-    },
-    "enum": {
-      "4002": "Incorrect `order` values"
-    },
-    "additionalProperties": {
-      "4003": "Incorrect `order` properties"
-    }
-  },
-  "additionalProperties": false
-},
-...
+}
 ```
 
 The multiply order condition should be like this: `order[id]=asc&order[datetime]=desc`.
@@ -162,39 +183,42 @@ are valid. Otherwise the 400 http response code (bad request) will be returned.
 
 ---
 
-#### FIELDS
+##### FIELDS
 
 The collection endpoints return only entity ids as a default. If you want to have more entity data, you should 
 define the `fields` array with entity property names.    
 
 An example configuration in a json route file:
 ```json
-...
-"fields": {
-  "type": "array",
-  "default": [
-    "id"
-  ],
-  "items": {
-    "type": "string",
-    "enum": [
-      "id",
-      "name"            
-    ]
-  },
-  "errorMessages": {
-    "required": {
-      "5000": "Incorrect `order` values"
-    },
-    "type": {
-      "5001": "Incorrect `order` types"
-    },
-    "enum": {
-      "5002": "Incorrect `order` values"
+{
+    "fields": {
+      "type": "array",
+      "default": [
+        "id"
+      ],
+      "items": {
+        "type": "string",
+        "enum": [
+          "id",
+          "name"            
+        ]
+      },
+      "errorMessages": {
+        "required": {
+          "code": 5000,
+          "message": "Incorrect `order` values"
+        },
+        "type": {
+          "code": 5001,
+          "message": "Incorrect `order` types"
+        },
+        "enum": {
+          "code": 5002,
+          "message": "Incorrect `order` values"
+        }
+      }
     }
-  }
-},
-...
+}
 ```
 
 You should put `fields[]=name&fields[]=id` in query string to get names and ids of products.
@@ -213,7 +237,7 @@ You should put `fields[]=name&fields[]=id` in query string to get names and ids 
 
 ---
 
-#### FILTERS 
+##### FILTERS 
 
 You can use the filtering section to define an additional conditions for the requested data set. In this case the object
 type should be defined in the route json file. For each of the filter you can also set all available values but it is 
@@ -221,44 +245,48 @@ not required.
 
 An example configuration in a json route file:
 ```json
-...
-"filters": {
-  "type": "object",
-  "default": {
-    "active": "1",
-    "query": ""
-  },
-  "properties": {
-    "query": {
-      "type": "string"
-    },
-    "active": {
-      "type": "string",
-      "enum": [
-        "1", "0"
-      ]
+{
+    "filters": {
+      "type": "object",
+      "default": {
+        "active": "1",
+        "query": ""
+      },
+      "properties": {
+        "query": {
+          "type": "string"
+        },
+        "active": {
+          "type": "string",
+          "enum": [
+            "1", "0"
+          ]
+        }
+      },
+      "sanitizers": [
+        "toObject"
+      ],
+      "errorMessages": {
+        "required": {
+          "code": 6000,
+          "message": "Incorrect `filters` values"
+        },
+        "type": {
+          "code": 6001,
+          "message": "Incorrect `filters` types"
+        },
+        "enum": {
+          "code": 6002,
+          "message": "Incorrect `filters` values"
+        },
+        "additionalProperties": {
+          "code": 6003,
+          "message": "Incorrect `filters` properties"
+        }
+      },
+      "additionalProperties": false
     }
-  },
-  "sanitizers": [
-    "toObject"
-  ],
-  "errorMessages": {
-    "required": {
-      "7000": "Incorrect `filters` values"
-    },
-    "type": {
-      "7001": "Incorrect `filters` types"
-    },
-    "enum": {
-      "7002": "Incorrect `filters` values"
-    },
-    "additionalProperties": {
-      "7003": "Incorrect `filters` properties"
-    }
-  },
-  "additionalProperties": false
 }
-...
 ```
 
 If you want to have a collection of products which have active status and their names are started from `Addi` 
@@ -272,7 +300,7 @@ are valid. Otherwise the 400 http response code (bad request) will be returned.
 
 ---
 
-#### WITH 
+##### WITH 
 
 You are able to get a collection list with an additional mapping to the external resources like 
 shops, photos, brands, etc. Thanks to this you have an access to more necessary data in one http request only. Remember 
@@ -280,27 +308,29 @@ to define all available bindings in `items.enum` section.
 
 An example configuration in a json route file:
 ```json
-...
-"with": {
-  "type": "array",
-  "default": [],
-  "items": {
-    "type": "string",
-    "enum": [
-      "brands",
-      "photos"
-    ]
-  },
-  "errorMessages": {
-    "type": {
-      "6001": "Incorrect `with` type"
-    },
-    "enum": {
-      "6002": "Incorrect `with` values"
+{
+    "with": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "string",
+        "enum": [
+          "brands",
+          "photos"
+        ]
+      },
+      "errorMessages": {
+        "type": {
+          "code": 7000,
+          "message": "Incorrect `with` type"
+        },
+        "enum": {
+          "code": 7001,
+          "message": "Incorrect `with` values"
+        }
+      }
     }
-  }
-},
-...
+}
 ```
 
 An example response with the parameter `with[]=photos`
@@ -334,18 +364,4 @@ An example response with the parameter `with[]=photos`
   }
 ]
 ```
-
-
-
 ---
-
-
-
-
-For instance if you would like to get list of first 100 products from one brand ordered by id  
-
-
-An example url
-```text
-http://api-local.miinto.net/test/location/1-m!i!s-041-1010?offset=0&limit=100&order[id]=asc&order[datetime]=desc&fields[]=datetime&fields[]=id&filters[active]=1&filters[query]=Addid&with[]=brands
-```
