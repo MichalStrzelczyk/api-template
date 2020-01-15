@@ -1,6 +1,6 @@
 # API template
 
-This repository has whole the code to create an api component template. The api application is based on Phalcon 4.0
+This repository has the whole code to create an api component template. The api application is based on Phalcon 4.0
 framework. You can find the Phalcon documentation here: https://docs.phalcon.io/4.0/en/introduction. 
 
 ## Installation
@@ -13,7 +13,7 @@ framework. You can find the Phalcon documentation here: https://docs.phalcon.io/
 
 ### Routes for the collection listing  
 
-One of the most common endpoints are data collection listing. Most likely there is a possibility to paginate, sort and
+One of the most common endpoints is data collection listing. Most likely there is a possibility to paginate, sort and
 filter the data. For these functionalities you can use parameters: 
 
 - offset    (pagination)
@@ -31,7 +31,7 @@ http://api-local.miinto.net/test/location/1-m!i!s-041-1010?offset=0&limit=100&or
 ---
 ##### OFFSET
 
-The offset parameter is a basic param necessary for the pagination and informs about the number of data batch. 
+The offset parameter is a basic param necessary for the pagination which informs about the number of data batch. 
 The offset should always has an integer type. In the configuration route file, you can define minimum and maximum 
 criteria. 
     
@@ -77,8 +77,8 @@ integer type is required.
 ---
 ##### LIMIT
 
-The limit parameter is a second basic param necessary for the pagination and gives us an information about how many 
-results we want to have in response data. The limit should always has an integer type. In the configuration route file, 
+The limit parameter is a second basic param necessary for the pagination which gives us an information how many 
+results we receive in response data. The limit should always has an integer type. In the configuration route file, 
 you can define minimum and maximum criteria for limit.    
 
 An example configuration in a json route file:
@@ -119,7 +119,7 @@ integer type is required.
 ##### ORDER
 
 If you want to have a sorted dataset by some rule, you have to define the `order` section as an object type. Properties
-of this object became order types. Each of order type should be defined as a string type with enum values  
+of this object become order types. Each of order type should be defined as a string type with enum values  
 ['asc','desc'].   
 
 An example configuration in a json route file:
@@ -172,7 +172,7 @@ An example configuration in a json route file:
 }
 ```
 
-The multiply order condition should be like this: `order[id]=asc&order[datetime]=desc`.
+The multiply order condition should look like this: `order[id]=asc&order[datetime]=desc`.
 
 **CAUTION** Sanitizer `toObject` should be always set. Orders are set in a query string as an array so casting to the 
 object type is required.
