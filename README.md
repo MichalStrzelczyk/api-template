@@ -2,6 +2,10 @@
 
 ## Installation
 
+```shell script
+composer install miinto/template-api
+```
+
 ## Usage
 
 ### Routes for collection listing  
@@ -9,15 +13,19 @@
 One of the most common endpoints are collection listing with paginating and filtering. Here you can find a list of all
 parameters which are able to use via GET method.
 
-* offset
-* limit
-* fields
-* order
-* filters
-* with
+- offset
+- limit
+- fields
+- order
+- filters
+- with
  
 ---
 #### LIMIT
+
+The limit parameter is a basic param necessary for the pagination and gives us an information about how many results do 
+we want to have in response data. The limit should always has an integer type. In the configuration route file, you can 
+define minimum and maximum criteria for limit.    
 
 An example configuration in a json route file:
 ```json
@@ -26,7 +34,7 @@ An example configuration in a json route file:
   "type": "integer",
   "default": 100,
   "minimum": 0,
-  "maximum": 999999999999,
+  "maximum": 1000,
   "sanitizers": [
     "toInteger"
   ],
@@ -47,43 +55,54 @@ An example configuration in a json route file:
 },
 ...
 ```
+**CAUTION** Sanitizer `toInteger` should be always set. The limit parameter is set in a query string so casting to the 
+integer type is required.
+
 ---
 #### OFFSET
 
+The offset parameter is a second basic param necessary for the pagination and informs about the number of data batch. 
+The offset should always has an integer type. In the configuration route file, you can define minimum and maximum 
+criteria. 
+    
 An example configuration in a json route file:
 ```json
 ...
-"offset": {
-          "type": "integer",
-          "default": 0,
-          "minimum": 0,
-          "maximum": 999999999999,
-          "sanitizers": [
-            "toInteger"
-          ],
-          "errorMessages": {
-            "required": {
-              "2000": "Parameter `offset` is required"
-            },
-            "type": {
-              "2001": "Parameter `offset` has invalid type"
-            },
-            "minimum": {
-              "2002": "Minimum `offset` is 0"
-            },
-            "maximum": {
-              "2003": "Maximum `offset` is 999999999999"
-            }
-          }
-        },
+  "offset": {
+    "type": "integer",
+    "default": 0,
+    "minimum": 0,
+    "maximum": 999999999999,
+    "sanitizers": [
+      "toInteger"
+    ],
+    "errorMessages": {
+      "required": {
+        "2000": "Parameter `offset` is required"
+      },
+      "type": {
+        "2001": "Parameter `offset` has invalid type"
+      },
+      "minimum": {
+        "2002": "Minimum `offset` is 0"
+      },
+      "maximum": {
+        "2003": "Maximum `offset` is 999999999999"
+      }
+    }
+  }
 ...
 ```
+
+**CAUTION** Sanitizer `toInteger` should be always set. The limit parameter is set in a query string so casting to the 
+integer type is required.
+
 ---
 
 #### ORDER
 
-If you want to have a sorted dataset by some rule, you have to define the `order` section as a object type. Properties
-of this object became a order types. Each of order type should be defined as a string type with enum values 
+If you want to have a sorted dataset by some rule, you have to define the `order` section as an object type. Properties
+of this object became order types. Each of order type should be defined as a string type with enum values  
 ['asc','desc'].   
 
 An example configuration in a json route file:
@@ -132,7 +151,7 @@ An example configuration in a json route file:
 ...
 ```
 
-The multiply order condition should be like this: `order[id]=asc&order[datetime]=desc`
+The multiply order condition should be like this: `order[id]=asc&order[datetime]=desc`.
 
 **CAUTION** Sanitizer `toObject` should be always set. Orders are set in a query string as an array so casting to the 
 object type is required.
